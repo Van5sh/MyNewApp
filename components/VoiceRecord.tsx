@@ -59,7 +59,6 @@ const SpeechToText = () => {
     setIsLoading(false);
   };
 
-  // Request microphone permissions (Android only)
   const requestPermissions = async () => {
     if (Platform.OS === 'android') {
       try {
@@ -102,8 +101,8 @@ const SpeechToText = () => {
     }
 
     try {
-      await Voice.stop(); // Stop any ongoing session
-      setResult(''); // Reset result
+      await Voice.stop();
+      setResult('');
       await Voice.start('en-US');
     } catch (error) {
       console.error('Voice start error:', error);
@@ -113,7 +112,6 @@ const SpeechToText = () => {
     }
   };
 
-  // Stop listening for speech
   const stopListening = async () => {
     try {
       await Voice.stop();

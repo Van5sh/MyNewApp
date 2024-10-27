@@ -19,8 +19,19 @@ import { Colors } from "../constants/colors";
 interface Imageapp1 {
   search: string;
 }
+interface ImageProps{
+  id: number;
+  src: {
+    medium: string;
+    large: string;
+  };
+  photographer: string;
+  width: number;
+  height: number;
+}
 
 const API_KEY = "P7tzxzn5lze9AKS6nfBGPEEN3Ozpp68L3AwngcO9xVujZyIDFtmDSOK1";
+
 const IMAGES_PER_PAGE = 16;
 const windowWidth = Dimensions.get('window').width;
 const imageWidth = (windowWidth - 48) / 2;
@@ -52,7 +63,7 @@ const ImageApp: React.FC<Imageapp1> = ({ search }) => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string|null>(null);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState<ImageProps>();
   const [searchText, setSearchText] = useState<string>(search);
   const [searchQuery, setSearchQuery] = useState(search);
   const [page, setPage] = useState(1);
@@ -109,7 +120,7 @@ const ImageApp: React.FC<Imageapp1> = ({ search }) => {
 
   const renderImageGrid = () => (
     <View style={styles.gridContainer}>
-      {images.map((image) => (
+      {images.map((image:ImageProps) => (
         <TouchableOpacity 
           key={image.id}
           style={styles.imageWrapper}
@@ -137,7 +148,7 @@ const ImageApp: React.FC<Imageapp1> = ({ search }) => {
       <View style={styles.selectedImageContainer}>
         <TouchableOpacity 
           style={styles.closeButton}
-          onPress={() => setSelectedImage(null)}
+          onPress={() => setSelectedImage(undefined)}
         >
           <Text style={styles.closeButtonText}>x</Text>
         </TouchableOpacity>
