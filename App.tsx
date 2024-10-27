@@ -4,7 +4,7 @@ import ImageApp from './components/Imageapp';
 import SpeechToText from './components/VoiceRecord';
 export default function App() {
   return (
-  <SpeechToText/>
+    <SpeechToText/>
   );
 }
 

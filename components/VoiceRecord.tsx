@@ -32,6 +32,7 @@ const SpeechToText = () => {
       Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
+
   const onSpeechStart = () => {
     setIsListening(true);
     setError('');
@@ -141,21 +142,20 @@ const SpeechToText = () => {
       >
         {isLoading ? (
           <ActivityIndicator size="large" color={Colors.purple} />
-        ) : <Icon 
-          name={isListening ? 'mic' : 'mic-outline'} 
-          size={50} 
-          color={isListening ? Colors.purple : Colors.purple} 
+        ) : <Icon
+          name={isListening ? 'mic' : 'mic-outline'}
+          size={50}
+          color={isListening ? Colors.purple : Colors.purple}
         />}
       </TouchableOpacity>
 
       <Text style={styles.statusText}>
-        {isLoading ? 'Initializing...' : 
-         isListening ? 'Listening...' : 
+        {isLoading ? 'Initializing...' :
+         isListening ? 'Listening...' :
          'Ready to listen'}
       </Text>
-
       {isSearchTriggered && result && (
-        <ImageApp search={result} /> // Pass result as search term to ImageApp
+        <ImageApp search={result} />
       )}
     </View>
   );

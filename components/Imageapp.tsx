@@ -1,25 +1,22 @@
-import React, { useEffect, useState, memo } from "react";
-import { 
-  View, 
-  ScrollView, 
-  Button, 
-  Image, 
-  StyleSheet, 
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
   Text,
   Dimensions,
-  TouchableOpacity,
   RefreshControl,
-  TextInput
 } from "react-native";
 import SearchBar from "./SearchBar";
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../constants/colors";
 
 interface Imageapp1 {
   search: string;
 }
-interface ImageProps{
+interface ImageProps {
   id: number;
   src: {
     medium: string;
@@ -31,38 +28,37 @@ interface ImageProps{
 }
 
 const API_KEY = "P7tzxzn5lze9AKS6nfBGPEEN3Ozpp68L3AwngcO9xVujZyIDFtmDSOK1";
-
 const IMAGES_PER_PAGE = 16;
-const windowWidth = Dimensions.get('window').width;
+const windowWidth = Dimensions.get("window").width;
 const imageWidth = (windowWidth - 48) / 2;
 
-
-
-const fetchImages = async (searchQuery = 'nature', page = 1) => {
+const fetchImages = async (searchQuery = "nature", page = 1) => {
   try {
-    const API_URL = `https://api.pexels.com/v1/search?query=${encodeURIComponent(searchQuery)}&per_page=${IMAGES_PER_PAGE}&page=${page}`;
+    const API_URL = `https://api.pexels.com/v1/search?query=${encodeURIComponent(
+      searchQuery
+    )}&per_page=${IMAGES_PER_PAGE}&page=${page}`;
     const response = await fetch(API_URL, {
       headers: {
-        'Authorization': API_KEY
-      }
+        Authorization: API_KEY,
+      },
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error fetching images:', error);
+    console.error("Error fetching images:", error);
     return null;
   }
 };
 
 const ImageApp: React.FC<Imageapp1> = ({ search }) => {
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<ImageProps[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string|null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<ImageProps>();
   const [searchText, setSearchText] = useState<string>(search);
   const [searchQuery, setSearchQuery] = useState(search);
@@ -72,17 +68,19 @@ const ImageApp: React.FC<Imageapp1> = ({ search }) => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const data = await fetchImages(query, pageNumber);
-      
+
       if (data && data.photos && data.photos.length > 0) {
-        setImages((prevImages) => pageNumber === 1 ? data.photos : [...prevImages, ...data.photos]);
+        setImages((prevImages) =>
+          pageNumber === 1 ? data.photos : [...prevImages, ...data.photos]
+        );
         console.log(`Loaded ${data.photos.length} images`);
       } else {
-        setError('No images found');
+        setError("No images found");
       }
     } catch (err) {
-      setError('Failed to load images');
+      setError("Failed to load images");
       console.error(err);
     } finally {
       setLoading(false);
@@ -93,12 +91,10 @@ const ImageApp: React.FC<Imageapp1> = ({ search }) => {
     loadImages(search, 1);
   }, []);
 
-  
   useEffect(() => {
     loadImages(searchQuery, 1);
   }, [searchQuery]);
 
-  
   useEffect(() => {
     setSearchText(search);
     setSearchQuery(search);
@@ -120,8 +116,8 @@ const ImageApp: React.FC<Imageapp1> = ({ search }) => {
 
   const renderImageGrid = () => (
     <View style={styles.gridContainer}>
-      {images.map((image:ImageProps) => (
-        <TouchableOpacity 
+      {images.map((image: ImageProps) => (
+        <TouchableOpacity
           key={image.id}
           style={styles.imageWrapper}
           onPress={() => setSelectedImage(image)}
@@ -146,7 +142,7 @@ const ImageApp: React.FC<Imageapp1> = ({ search }) => {
 
     return (
       <View style={styles.selectedImageContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.closeButton}
           onPress={() => setSelectedImage(undefined)}
         >
@@ -171,12 +167,12 @@ const ImageApp: React.FC<Imageapp1> = ({ search }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <SearchBar 
+      <SearchBar
         searchText={searchText}
         setSearchText={setSearchText}
         handleSearch={handleSearch}
       />
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         refreshControl={
           <RefreshControl
@@ -193,13 +189,13 @@ const ImageApp: React.FC<Imageapp1> = ({ search }) => {
             <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
-        
+
         {!loading && !error && renderImageGrid()}
       </ScrollView>
-      
+
       {selectedImage && renderSelectedImage()}
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={handleLoadMore}>
         <Text style={styles.buttonText}>Load More Images</Text>
       </TouchableOpacity>
     </SafeAreaView>
@@ -211,72 +207,47 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
   },
-  button:{
-    padding: 10,
+  button: {
+    justifyContent: "center",
+    padding: 6,
     backgroundColor: Colors.white,
-    borderRadius: 10,
+    borderRadius: 4,
     borderWidth: 5,
-    marginHorizontal: 30,
+    marginHorizontal: 20,
     borderColor: Colors.purple,
-    alignItems: 'center',
+    alignItems: "center",
   },
-  buttonText:{
+  buttonText: {
     color: Colors.purple,
     fontSize: 16,
-    fontWeight: 'bold',
-  },
-  searchContainer: {
-    width: Dimensions.get('window').width,
-    alignItems: 'center',
-    marginVertical: '6%',
-    position: 'relative',
-  },
-  searchBox: {
-    width: '80%',
-    fontSize: 15,
-    borderWidth: 1,
-    borderColor: Colors.purple,
-    borderRadius: 25,
-    paddingHorizontal: '8%',
-    height: 35,
-    backgroundColor: Colors.white,
-    shadowColor: Colors.blue,
-    shadowOpacity: 0.3,
-    elevation: 7,
-  },
-  searchIconContainer: {
-    position: 'absolute',
-    right: '14%',
-    top: 8,
-    zIndex: 1,
-    padding: 5,
+    fontWeight: "bold",
   },
   scrollContent: {
     padding: 16,
   },
   gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
   imageWrapper: {
     width: imageWidth,
     height: imageWidth,
     marginBottom: 16,
     borderRadius: 8,
-    overflow: 'hidden',
-    backgroundColor: '#f0f0f0',
+    overflow: "hidden",
+    backgroundColor: "#f0f0f0",
   },
   gridImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   photographerOverlay: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     padding: 4,
   },
   photographerText: {
@@ -284,22 +255,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   selectedImageContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.9)",
+    justifyContent: "center",
+    alignItems: "center",
     zIndex: 1000,
   },
   selectedImage: {
-    width: '90%',
-    height: '70%',
+    width: "90%",
+    height: "70%",
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 40,
     right: 20,
     zIndex: 1001,
@@ -310,7 +281,7 @@ const styles = StyleSheet.create({
   },
   imageInfo: {
     padding: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   photographerName: {
     color: Colors.white,
@@ -318,16 +289,16 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   dimensions: {
-    color: '#ccc',
+    color: "#ccc",
     fontSize: 14,
   },
   messageContainer: {
     padding: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    alignItems: "center",
+    justifyContent: "center",
+  },  
   errorText: {
-    color: 'red',
+    color: "red",
   },
 });
 
