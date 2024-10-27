@@ -1,26 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { TextInput, View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import { searchInput,setSearchInput } from '../input'; 
-import { Colors } from '../color/colors';
+import { Colors } from '../constants/colors';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface SearchBarProps{
-  searchInput: string; 
-  setSearchInput: (text: string) => void; 
+  searchText: string; 
+  setSearchText: (text: string) => void; 
+  handleSearch: () => void;
 }
 
 const SearchBar:React.FC<SearchBarProps> = ({
-  searchInput, 
-  setSearchInput,
+  searchText,
+  setSearchText,
+  handleSearch,
 }) => {
-  const [input, setInput] = useState(searchInput); 
+  const [input, setInput] = useState(searchText); 
 
   const search = async (text: string) => {
-    setSearchInput(text); 
+    setSearchText(text); 
   };
 
   useEffect(() => {
-    setInput(searchInput); 
+    setInput(searchText); 
   }, []);
 
   return (

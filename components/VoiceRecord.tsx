@@ -9,56 +9,50 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
-// Import Voice with TypeScript types
+import Icon from 'react-native-vector-icons/Ionicons'; 
 import Voice, { SpeechResultsEvent, SpeechErrorEvent } from '@react-native-voice/voice';
 import ImageApp from './Imageapp';
+import { Colors } from '../constants/colors';
 
 const SpeechToText = () => {
-  // State management for the component
   const [isListening, setIsListening] = useState(false);
   const [result, setResult] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isSearchTriggered, setIsSearchTriggered] = useState(false); // New state for triggering search
+  const [isSearchTriggered, setIsSearchTriggered] = useState(false);
 
-  // Set up Voice listeners when component mounts
   useEffect(() => {
-    // Initialize Voice event handlers
+
     Voice.onSpeechStart = onSpeechStart;
     Voice.onSpeechEnd = onSpeechEnd;
     Voice.onSpeechResults = onSpeechResults;
     Voice.onSpeechError = onSpeechError;
 
-    // Cleanup function to destroy Voice instance and remove listeners
     return () => {
       Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
-
-  // Handler when speech recognition starts
   const onSpeechStart = () => {
     setIsListening(true);
     setError('');
     setIsLoading(false);
-    setIsSearchTriggered(false); // Reset search trigger
+    setIsSearchTriggered(false);
   };
 
-  // Handler when speech recognition ends
+
   const onSpeechEnd = () => {
     setIsListening(false);
     setIsLoading(false);
-    setIsSearchTriggered(true); // Trigger search when listening ends
+    setIsSearchTriggered(true);
   };
 
-  // Handler for speech recognition results
   const onSpeechResults = (event: SpeechResultsEvent) => {
     if (event.value && event.value.length > 0) {
-      setResult(event.value[0]); // Take the first (most confident) result
+      setResult(event.value[0]);
     }
     setIsLoading(false);
   };
 
-  // Handler for speech recognition errors
   const onSpeechError = (error: SpeechErrorEvent) => {
     setError(error.error?.message || 'An error occurred');
     setIsListening(false);
@@ -94,10 +88,9 @@ const SpeechToText = () => {
         return false;
       }
     }
-    return true; // iOS handles permissions differently
+    return true;
   };
 
-  // Start listening for speech
   const startListening = async () => {
     setError('');
     setIsLoading(true);
@@ -149,8 +142,12 @@ const SpeechToText = () => {
         disabled={isLoading}
       >
         {isLoading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
-        ) : null}
+          <ActivityIndicator size="large" color={Colors.purple} />
+        ) : <Icon 
+          name={isListening ? 'mic' : 'mic-outline'} 
+          size={50} 
+          color={isListening ? Colors.purple : Colors.purple} 
+        />}
       </TouchableOpacity>
 
       <Text style={styles.statusText}>
@@ -178,7 +175,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 30,
-    color: '#333333',
+    color:Colors.purple,
   },
   resultText: {
     fontSize: 18,

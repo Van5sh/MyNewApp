@@ -11,24 +11,21 @@ import {
   RefreshControl,
   TextInput
 } from "react-native";
+import SearchBar from "./SearchBar";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "../constants/colors";
 
 interface Imageapp1 {
   search: string;
 }
 
-// Configuration and API setup
 const API_KEY = "P7tzxzn5lze9AKS6nfBGPEEN3Ozpp68L3AwngcO9xVujZyIDFtmDSOK1";
-const IMAGES_PER_PAGE = 15;
+const IMAGES_PER_PAGE = 16;
 const windowWidth = Dimensions.get('window').width;
 const imageWidth = (windowWidth - 48) / 2;
 
-const Colors = {
-  purple: '#800080',
-  white: '#FFFFFF',
-  blue: '#0000FF'
-};
+
 
 const fetchImages = async (searchQuery = 'nature', page = 1) => {
   try {
@@ -51,34 +48,12 @@ const fetchImages = async (searchQuery = 'nature', page = 1) => {
   }
 };
 
-const SearchBar = memo(({ searchText, setSearchText, handleSearch }) => (
-  <View style={styles.searchContainer}>
-    <TextInput
-      placeholder="Search images..."
-      style={styles.searchBox}
-      value={searchText}
-      onChangeText={(text) => setSearchText(text)}
-      onSubmitEditing={handleSearch}
-      returnKeyType="search"
-      autoCorrect={false}
-      autoCapitalize="none"
-    />
-    <TouchableOpacity 
-      onPress={handleSearch} 
-      style={styles.searchIconContainer}
-      activeOpacity={0.7}
-    >
-      <Icon name="search" size={20} color={Colors.purple} style={styles.searchIcon} />
-    </TouchableOpacity>
-  </View>
-));
-
 const ImageApp: React.FC<Imageapp1> = ({ search }) => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string|null>(null);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [searchText, setSearchText] = useState(search);
+  const [searchText, setSearchText] = useState<string>(search);
   const [searchQuery, setSearchQuery] = useState(search);
   const [page, setPage] = useState(1);
 
@@ -103,17 +78,16 @@ const ImageApp: React.FC<Imageapp1> = ({ search }) => {
     }
   };
 
-  // Initial load when component mounts
   useEffect(() => {
     loadImages(search, 1);
   }, []);
 
-  // Handle search query changes
+  
   useEffect(() => {
     loadImages(searchQuery, 1);
   }, [searchQuery]);
 
-  // Handle prop changes
+  
   useEffect(() => {
     setSearchText(search);
     setSearchQuery(search);
@@ -123,7 +97,7 @@ const ImageApp: React.FC<Imageapp1> = ({ search }) => {
   const handleSearch = () => {
     if (searchText.trim()) {
       setSearchQuery(searchText.trim());
-      setPage(1); // Reset page to 1 for a new search
+      setPage(1);
     }
   };
 
@@ -137,7 +111,7 @@ const ImageApp: React.FC<Imageapp1> = ({ search }) => {
     <View style={styles.gridContainer}>
       {images.map((image) => (
         <TouchableOpacity 
-          key={image.id} 
+          key={image.id}
           style={styles.imageWrapper}
           onPress={() => setSelectedImage(image)}
         >
@@ -165,7 +139,7 @@ const ImageApp: React.FC<Imageapp1> = ({ search }) => {
           style={styles.closeButton}
           onPress={() => setSelectedImage(null)}
         >
-          <Text style={styles.closeButtonText}>×</Text>
+          <Text style={styles.closeButtonText}>x</Text>
         </TouchableOpacity>
         <Image
           source={{ uri: selectedImage.src.large }}
@@ -213,12 +187,10 @@ const ImageApp: React.FC<Imageapp1> = ({ search }) => {
       </ScrollView>
       
       {selectedImage && renderSelectedImage()}
-      
-      <Button
-        title="Load More Images"
-        onPress={handleLoadMore}
-        disabled={loading}
-      />
+
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText}>Load More Images</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -228,8 +200,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
   },
+  button:{
+    padding: 10,
+    backgroundColor: Colors.white,
+    borderRadius: 10,
+    borderWidth: 5,
+    marginHorizontal: 30,
+    borderColor: Colors.purple,
+    alignItems: 'center',
+  },
+  buttonText:{
+    color: Colors.purple,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   searchContainer: {
-    width: '100%',
+    width: Dimensions.get('window').width,
     alignItems: 'center',
     marginVertical: '6%',
     position: 'relative',
