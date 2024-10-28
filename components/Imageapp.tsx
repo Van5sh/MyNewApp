@@ -12,20 +12,8 @@ import {
 import SearchBar from "./SearchBar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../constants/colors";
-
-interface Imageapp1 {
-  search: string;
-}
-interface ImageProps {
-  id: number;
-  src: {
-    medium: string;
-    large: string;
-  };
-  photographer: string;
-  width: number;
-  height: number;
-}
+import { ImageProps } from "../interfaces/ImageProps";
+import { Imageapp1 } from "../interfaces/ImageSearch";
 
 const API_KEY = "P7tzxzn5lze9AKS6nfBGPEEN3Ozpp68L3AwngcO9xVujZyIDFtmDSOK1";
 const IMAGES_PER_PAGE = 16;
