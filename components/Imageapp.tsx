@@ -14,8 +14,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../constants/colors";
 import { ImageProps } from "../interfaces/ImageProps";
 import { Imageapp1 } from "../interfaces/ImageSearch";
+import { API_KEY } from "../config";
 
-const API_KEY = "P7tzxzn5lze9AKS6nfBGPEEN3Ozpp68L3AwngcO9xVujZyIDFtmDSOK1";
 const IMAGES_PER_PAGE = 16;
 const windowWidth = Dimensions.get("window").width;
 const imageWidth = (windowWidth - 48) / 2;
