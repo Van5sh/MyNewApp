@@ -126,7 +126,6 @@ const SpeechToText = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Speech-to-Text</Text>
-
       {error ? (
         <Text style={styles.errorText}>{error}</Text>
       ) : (

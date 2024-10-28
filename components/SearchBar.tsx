@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextInput, View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { TextInput, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { Colors } from '../constants/colors';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -27,48 +27,50 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <View style={styles.container}>
-      <TextInput
-        placeholder="Search"
-        style={styles.box}
-        value={input}
-        onChangeText={(text) => {
-          setInput(text);
-        }}
-        onSubmitEditing={onSearchPress}
-      />
-      <TouchableOpacity onPress={onSearchPress} style={styles.searchIcon}>
-        <Icon name="search" size={20} color={Colors.purple} />
-      </TouchableOpacity>
+      <View style={styles.inputWrapper}>
+        <TextInput
+          placeholder="Search"
+          style={styles.input}
+          value={input}
+          onChangeText={(text) => setInput(text)}
+          onSubmitEditing={onSearchPress}
+        />
+        <TouchableOpacity onPress={onSearchPress} style={styles.iconWrapper}>
+          <Icon name="search" size={20} color={Colors.purple} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: 'row',
     width: Dimensions.get('window').width,
     alignItems: 'center',
-    marginVertical: '6%',
-    marginBottom: '12%',
+    marginVertical: 10,
   },
-  searchIcon: {
-    position: 'absolute',
-    right: '10%',
-    top: '1%',
-  },
-  box: {
-    width: Dimensions.get('window').width * 0.7,
-    fontSize: 15,
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '90%',
+    backgroundColor: Colors.white,
+    borderRadius: 25,
     borderWidth: 1,
     borderColor: Colors.purple,
-    borderRadius: 25,
-    paddingHorizontal: '2%',
-    height: 35,
-    backgroundColor: Colors.white,
+    paddingHorizontal: 10,
+    height: 50,
     shadowColor: Colors.blue,
     shadowOpacity: 0.3,
     elevation: 7,
+  },
+  input: {
+    flex: 1,
+    fontSize: 15,
+    color: '#333',
+    paddingHorizontal: 10,
+  },
+  iconWrapper: {
+    padding: 10,
   },
 });
 
